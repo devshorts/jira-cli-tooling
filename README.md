@@ -25,13 +25,13 @@ components: <the components to add to your jira>
 
 ### Demos
 
-Creating a new branch:
+Creating a new jira:
+
+![](./img/jira_new.gif)
+
+Creating a new branch with a corresponding jira:
 
 ![](./img/new_branch.gif)
-
-Resume a new branch:
-
-![](./img/resume.gif)
 
 ### Adding to sprint
 
