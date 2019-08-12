@@ -1,0 +1,14 @@
+custom-commands:
+  - name: sprint-add
+    help: add issue to active sprint for project
+    args:
+      - name: ISSUE
+        required: true
+    script: |          
+      active_sprint=$({{jira}} req "/rest/agile/1.0/board/1583/sprint?state=active" | jq '.values | .[] | select(.originBoardId | contains(1583))')
+      sprint_id=`echo $active_sprint | jq '.id'`
+      sprint_name=`echo $active_sprint | jq '.name'`
+      {{jira}} req -Q -M POST "/rest/agile/1.0/sprint/$sprint_id/issue" "{\"issues\":[\"{{args.ISSUE}}\"]}"     
+      echo "{{args.ISSUE}} added to ${sprint_name}"
+endpoint: http://jira.corp.stripe.com
+unixproxy: "$HOME/.stripeproxy"
