@@ -3,16 +3,12 @@ require 'tty-prompt'
 require 'pry'
 require 'yaml'
 
-def JIRA
-  YAML.load_file(File.join(File.expand_path('~'), ".jira.d/custom.yaml"))
-end
+JIRA=YAML.load_file(File.join(File.expand_path('~'), ".jira.d/custom.yaml"))
 
-def JIRA_CONFIG
-  YAML.load_file(File.join(File.expand_path('~'), ".jira.d/config.yaml"))
-end
+JIRA_CONFIG = YAML.load_file(File.join(File.expand_path('~'), ".jira.d/config.yml"))
 
 def jira_items
-  `jira list --query='assignee = currentUser() AND resolution = Unresolved and Sprint in openSprints() order by updated DESC'`.split("\n")
+  `jira list --query='assignee = currentUser() AND resolution = Unresolved  order by updated DESC'`.split("\n")
 end
 
 def print_jira_list
