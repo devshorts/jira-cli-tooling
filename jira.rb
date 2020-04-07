@@ -7,24 +7,28 @@ def JIRA
   YAML.load_file(File.join(File.expand_path('~'), ".jira.d/custom.yaml"))
 end
 
-def jira_items 
+def JIRA_CONFIG
+  YAML.load_file(File.join(File.expand_path('~'), ".jira.d/config.yaml"))
+end
+
+def jira_items
   `jira list --query='assignee = currentUser() AND resolution = Unresolved and Sprint in openSprints() order by updated DESC'`.split("\n")
 end
 
-def print_jira_list 
-  jira_items.each do |item| 
+def print_jira_list
+  jira_items.each do |item|
     ticket, message = item.split(" ", 2)
     ticket=ticket.tr(":", "")
-    puts "https://jira.corp.stripe.com/browse/#{ticket.colorize(:blue)} #{message} "
+    puts "#{JIRA_CONFIG["endpoint"]}/browse/#{ticket.colorize(:blue)} #{message} "
   end
 end
 
 def new_jira
     prompt = TTY::Prompt.new(active_color: :cyan, enable_color: true)
-  
+
     title=prompt.ask('Ticket title?')
     _, jira_ticket, link =`jira create -p #{JIRA["project"]} -o "summary=#{title}" -o "components=#{JIRA["component"]}" --noedit`.split(" ")
-    puts link    
+    puts link
 end
 
 # resumes a ticket
@@ -32,9 +36,9 @@ def resume_jira
   prompt = TTY::Prompt.new(active_color: :cyan, enable_color: true)
 
   user = ENV["USER"]
-  
+
   branch_regex = %r{.*#{user}-(?<jira>.*)/(?<title>.*)$}
-  
+
   existing_git_branches = {}
 
   # list all branches formatted by branch name and aggregate them
@@ -42,7 +46,7 @@ def resume_jira
     branch.strip!
 
     if matches = branch_regex.match(branch)
-      if existing_git_branches[matches[:jira]].nil? 
+      if existing_git_branches[matches[:jira]].nil?
         existing_git_branches[matches[:jira]] = []
       end
 
@@ -81,17 +85,17 @@ def resume_jira
         puts "No branches exist"
       elsif existing.length == 1
         branch_to_use = existing[0][:branch]
-      else       
-        
-        names = existing.map do |b| 
+      else
+
+        names = existing.map do |b|
           b[:branch]
         end
-        
+
         branch_to_use=prompt.select('Branch?', names)
       end
     end
   end
-  
+
   if branch_to_use != ""
     `git checkout #{branch_to_use}`
   end
@@ -102,24 +106,24 @@ def new_branch
   prompt = TTY::Prompt.new(active_color: :cyan, enable_color: true)
 
   selection=prompt.select('What are you working on?', jiras)
-  
+
   if selection == "None"
     branch_name=prompt.ask('Name?')
-    
+
     `git checkout -b #{branch_name.tr(" ", "_")}`
   elsif selection == "New-Jira"
     title=prompt.ask('Ticket title?')
     _, jira_ticket, link =`jira create -p #{JIRA["project"]} -o "summary=#{title}"  -o "components=#{JIRA["component"]}"  --noedit`.split(" ")
     puts link
-    `git checkout -b $USER-#{jira_ticket}/#{title.tr(" ", "_")[0..40]}`  
-  else 
+    `git checkout -b $USER-#{jira_ticket}/#{title.tr(" ", "_")[0..40]}`
+  else
     jira_ticket, message=selection.split(" ", 2)
-    
+
     x = prompt.ask("Branch title? (#{message})")
     if !x.nil?
       message=x
     end
-    
+
     `git checkout -b $USER-#{jira_ticket.tr(":", "")}/#{message.tr(" ", "_")[0..40]}`
   end
 end
