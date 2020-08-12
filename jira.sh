@@ -31,7 +31,7 @@ function jira-inprogress(){
 # marks the current jira as done if no argument is supplied
 # otherwise marks the argument as done (i.e. jira-done FOO-123)
 function jira-done(){
-  if [ "$1" '==' "" ];then 
+  if [ "$1" '==' "" ];then
     jira_num=`branch-name`
   else
     jira_num="$1"
@@ -43,7 +43,7 @@ function jira-done(){
 # or marks the jira in progress if selecting an existing
 function new-branch() {
   RBENV_VERSION=2.5.3 ruby -r $BASE_PATH/jira.rb -e "new_branch"
-  jira-inprogress
+  # jira-inprogress
 }
 
 # open's the current branch jira in jira
