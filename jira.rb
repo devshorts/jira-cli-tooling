@@ -34,7 +34,7 @@ def resume_jira
 
     user = ENV["USER"]
 
-    branch_regex = %r{.*#{user}-(?<jira>.*)/(?<title>.*)$}
+    branch_regex = %r{.*#{user}-(?<jira>.*?)/(?<title>.*)$}
 
     existing_git_branches = {}
 
@@ -101,7 +101,9 @@ def resume_jira
 end
 
 def safe_trim(arg)
-  return arg.tr(" ", "_").tr("'", "").tr('"', '').tr(',','')[0..40]
+  "'\",:;.!@#\{$%^&*()}<>?[]+".each_char { |replace| arg = arg.tr(replace, '')  }
+
+  return arg.tr(" ", "_")[0..40]
 end
 
 def new_branch
