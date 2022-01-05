@@ -103,7 +103,7 @@ end
 def safe_trim(arg)
   "'\",:;.!@#\{$%^&*()}<>?[]+".each_char { |replace| arg = arg.tr(replace, '')  }
 
-  return arg.tr(" ", "_")[0..40]
+  return arg.tr(" ", "_").tr("/","_")[0..40]
 end
 
 def new_branch
