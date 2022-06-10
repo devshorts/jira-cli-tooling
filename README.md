@@ -1,6 +1,6 @@
 # jira-cli-tooling
 
-JIRA CLI wrapper tooling.  To install run 
+JIRA CLI wrapper tooling.  To install run
 
 ```
 bundle install
@@ -8,9 +8,9 @@ bundle install
 
 And source `jira.sh` in your shell.
 
-Also configure https://github.com/go-jira/jira#install 
+Also configure https://github.com/go-jira/jira#install
 
-You'll want to create a 
+You'll want to create a
 
 ```
 ~/.jira.d/custom.yaml
@@ -20,8 +20,34 @@ That contains the following fields:
 
 ```
 project: <your root jira project>
-components: <the components to add to your jira>
 ```
+
+Also create a
+
+
+```
+~/.jira.d/templates/edityaml
+```
+For example:
+
+```
+fields:
+  project:
+    key: AB
+  issuetype:
+    name: Task
+  assignee:
+    accountId: xxx:60fc2d79-0343-42ab-8a24-92c791c45632
+  summary: >-
+    {{ or .overrides.summary .fields.summary }}
+```
+
+That contains the template fields you want. You may need to put your resolved account ID to get over GDPR api restrictions:
+
+```
+/rest/api/3/user/search?query=<e-mail>
+```
+
 
 ### Demos
 
@@ -55,5 +81,3 @@ endpoint: https://jira.<your endpoint>
 ```
 
 Make sure to change your `${ROOT_BOARD_ID}` to be the board ID of your project. You can usually find this in the URL directly of your jira board.
-
-

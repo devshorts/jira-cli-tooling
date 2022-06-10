@@ -64,6 +64,12 @@ def resume_jira
       !existing_git_branches[cleaned_branch].nil?
     end
 
+    if jiras_with_branches.size == 0
+      puts "No working branches"
+      puts "Active jiras are #{jira_items}"
+      return
+    end
+
     selection=prompt.select('Resume?', jiras_with_branches)
 
     target_ticket, _ = selection.split(" ", 2)
@@ -119,7 +125,7 @@ def new_branch
       `git checkout -b #{branch_name.tr(" ", "_")}`
     elsif selection == "New-Jira"
       title=prompt.ask('Ticket title?')
-      _, jira_ticket, link =`jira create -p #{JIRA["project"]} -o "summary=#{title}"  -o "components=#{JIRA["component"]}"  --noedit`.split(" ")
+      _, jira_ticket, link =`jira create -p #{JIRA["project"]} -o "summary=#{title}" --noedit -t edit.yml`.split(" ")
       puts link
       `git checkout -b $USER-#{jira_ticket}/#{safe_trim(title)}`
     else
