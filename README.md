@@ -10,6 +10,14 @@ And source `jira.sh` in your shell.
 
 Also configure https://github.com/go-jira/jira#install
 
+To do that you'll do
+
+```
+$ go install github.com/go-jira/jira/cmd/jira@latest
+```
+
+When configuring the jira config.yml ensure you add `password-source: keyring` and run `jira session` to add your api token.
+
 You'll want to create a
 
 ```
