@@ -8,7 +8,7 @@ JIRA=YAML.load_file(File.join(File.expand_path('~'), ".jira.d/custom.yaml"))
 JIRA_CONFIG = YAML.load_file(File.join(File.expand_path('~'), ".jira.d/config.yml"))
 
 def jira_items
-  `jira list --query='assignee = currentUser() AND status not in ("Done",  "Deploy Needed", "Verification Needed" ) and status != "BACKLOG" order by updated DESC'`.split("\n")
+  `jira list --query='assignee = currentUser() AND status in ("Selected For Development", "In Progress" ) and status != "BACKLOG" order by updated DESC'`.split("\n")
 end
 
 def print_jira_list
