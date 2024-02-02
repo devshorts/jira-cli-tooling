@@ -130,7 +130,11 @@ def new_branch
     elsif selection == "New-Jira"
       title = prompt.ask('Ticket title?')
       _, jira_ticket, link = `jira create -p #{JIRA["project"]} -o "summary=#{title}" --noedit -t edit.yml`.split(" ")
+
+      `jira sprint-add #{jira_ticket}`
+
       puts link
+      
       `git checkout -b $USER-#{jira_ticket}/#{safe_trim(title)}`
     else
       jira_ticket, message = selection.split(" ", 2)
