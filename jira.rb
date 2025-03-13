@@ -105,6 +105,8 @@ def resume_jira
 
     if branch_to_use != ""
       `git checkout #{branch_to_use}`
+
+      `jira sprint-add #{target_ticket}`
     end
   rescue TTY::Reader::InputInterrupt
   end
@@ -134,7 +136,7 @@ def new_branch
       `jira sprint-add #{jira_ticket}`
 
       puts link
-      
+
       `git checkout -b $USER-#{jira_ticket}/#{safe_trim(title)}`
     else
       jira_ticket, message = selection.split(" ", 2)
